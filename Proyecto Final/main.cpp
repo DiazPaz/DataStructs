@@ -2,89 +2,110 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <conio.h>
 using namespace std; 
 
 #include "LinkedListTGP.h"
 
 int main(void)
 {
-    LinkedListTGP<string> citiesTrain;
-    LinkedListTGP<string> citiesCar;
+    LinkedListTGP<string> routes;
 
     ifstream fin; 
-    // ofstream fout; 
 
-    string links[2], line, word, hour;
-    int count1 = 0, count2 = 0, timeTrain[2], timeCar[2], distanceTrain, distanceCar; 
+    string org, dest, line, word, timeTrain, timeCar, distanceTrain, distanceCar, adjInfo[500][6], nodeInfo[500], aux;
+    int count, city = 0, size = 0, opcion; 
+    bool flag = false; 
 
-    fin.open("EuropeCities.csv");
-
-// ocupo tener una lista para la hora de los trenes, una lista para la hora de los carros,
-// distancia para trenes, distancia para carros
+    fin.open("EuropeCities.csv", ios::in);
 
     while(getline(fin, line))
     {
-        stringstream streamLine(line);
-        while(count1 < 6)
+        size++;
+        count = 0; 
+        if(size > 1)
         {
-            getline(streamLine, word, ',');
-            if(count1 < 2)
+            while(line != "" && count <= 6)
             {
-                links[count1] = word;
-            }
-            else if(count1 == 2)
-            {
-                stringstream streamWord(word);
-                while(count2 < 2)
+                if(line.find(",") != -1)
                 {
-                    getline(streamWord, hour, ':');
-                    if(count2 < 2)
+                    word = line.substr(0, line.find(","));
+                    line = line.substr(line.find(",")+1, line.size()-1);
+                    if(count == 0 && routes.findData(word) == -1)
                     {
-                        timeTrain[count2] = stoi(hour); 
+                        routes.addFirst(word);
                     }
-                    else
-                    {
-                        timeTrain[count2] = stoi(hour);
-                    }
-                    count2++;
+                    count++;
                 }
-                count2 = 0; 
-            }
-            else if(count1 == 4)
-            {
-                stringstream streamWord(word);
-                while(count2 < 2)
-                {
-                    getline(streamWord, hour, ':');
-                    if(count2 < 2)
-                    {
-                        timeCar[count2] = stoi(hour); 
-                    }
-                    else
-                    {
-                        timeCar[count2] = stoi(hour);
-                    }
-                    count2++;
-                }
-                count2 = 0; 
-            }
-            else
-            {
-                if(count1 == 3)
-                {
-                    distanceTrain = stoi(word);
-                } 
                 else
                 {
-                    distanceCar = stoi(word);
+                    word = line.substr(0, line.size());
+                    line = "";
+                    count++;
                 }
+                adjInfo[size-2][count - 1] = word; 
             }
-            count1++;
         }
-        
-        // citiesTrain.insertAdj(links[0], links[1], timeTrain[0]*60 + timeTrain[1], distanceTrain);
-        // citiesCar.insertAdj(links[0], links[1], timeCar[0]*60 + timeCar[1], distanceCar);
-        count1 = 0; 
+    }
+
+    for(int i = 0; i < size-1; i++)
+    {
+        routes.insertAdj(adjInfo[i][0], adjInfo[i][1], adjInfo[i][2], adjInfo[i][3], adjInfo[i][4], adjInfo[i][5]);
+    }
+
+
+    // system("cls");
+    cout << "1. Desplegar lista de adyacencias del grafo.\n";
+    cout << "2. Desplegar recorridos del grafo.\n";
+    cout << "3. InformaciOn entre dos ciudades.\n";
+    cout << "4. Salir.\n";
+    cout << "\nIngresa opciOn: ";
+    cin >> opcion; 
+
+    switch(opcion)
+    {
+        case 1:
+            // system("cls");
+            routes.printGraph();
+            cout << "Archivo de salida output-1.out creado!\n";
+            // getch();
+            break;
+
+        case 2:
+            do
+            {
+                // system("cls");
+                cout << "Ciudad de origen: ";
+                cin >> aux; 
+                
+                for(int i = 0; i < size; i++)
+                {
+                    if(aux == adjInfo[i][0])
+                    {
+                        flag = true;
+                    }
+                }
+                if(flag == false)
+                {
+                    // system("cls");
+                    cout << "Ciudad no encontrada, intente de nuevo. \n";
+                }
+
+            }while(flag == false);
+
+            routes.BFS(aux, 0 );
+            cout << "Ciudad encontrada. \nArchivo de salida output2.out creado. \nArchivo de salida output3.out creado.\n";
+
+            break;
+            
+        case 3:
+
+            break;
+        case 4:
+            return 0; 
+            break;
+        default:
+            break;
     }
 
     fin.close();

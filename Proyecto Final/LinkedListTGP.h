@@ -8,8 +8,9 @@ class LinkedListTGP
     private: 
         int size = 0; 
         NodeVT<T> *head;
-        Queue<T> fila;
-        Queue<T> procesados;
+        QueueT<T> fila;
+        QueueT<T> procesados;
+        ofstream fout2;
         int table[20][4];
         void printTable(T from);
         void initTable(T from);
@@ -31,8 +32,8 @@ class LinkedListTGP
         void updateData(T, T);
         void updateAt(int, T);
         bool insertAt(int, T);
-        void insertAdj(T fromV, T toV, int pondTiempo, int pondDist);
-        void BFS(T data);
+        void insertAdj(T fromV, T toV, string pondTiempoTren, string pondDistTren, string pondTiempoCarro, string pondDistCarro);
+        void BFS(T data, int cont);
         void DFS(T data);
         // int isProcessed(T dato);
         void Dijkstra(T from); 
@@ -147,7 +148,7 @@ void LinkedListTGP<T>::initTable(T from)
 }
 
 template <class T>
-void LinkedListTGP<T>::insertAdj(T fromV, T toV, int pondTiempo, int pondDist)
+void LinkedListTGP<T>::insertAdj(T fromV, T toV, string pondTiempoTren, string pondDistTren, string pondTiempoTrenCarro, string pondDistCarro)
 {
     NodeVT<T> *aux = head; 
     int count = 0; 
@@ -158,7 +159,7 @@ void LinkedListTGP<T>::insertAdj(T fromV, T toV, int pondTiempo, int pondDist)
     }
     if(aux->dato == fromV) // aquí voy a ligar la lista de adyacencias
     {
-        NodeT<T> *newAdj = new NodeT(toV, pondTiempo, pondDist);
+        NodeT<T> *newAdj = new NodeT(toV, pondTiempoTren, pondDistTren, pondTiempoTrenCarro, pondDistCarro);
         NodeT<T> *aux2; 
         if(aux->adj == nullptr)
         {
@@ -173,6 +174,9 @@ void LinkedListTGP<T>::insertAdj(T fromV, T toV, int pondTiempo, int pondDist)
         }
     }
 }
+
+// cambiar funcion enqueue para que acepte los parametros necesarios para NodeT
+
 
 template <class T> 
 void LinkedListTGP<T>::addFirst(T dato)
@@ -222,46 +226,44 @@ void LinkedListTGP<T>::printList()
 template <class T> 
 void LinkedListTGP<T>::printGraph()
 {
+    ofstream fout("output-1.out");
+    fout << "LISTA DE ADYACENCIAS: \n";
     if(size > 0)
     {
         NodeVT<T> *aux = head; 
         NodeT<T> *auxAdj;
         while(aux->next != nullptr)
         {
-            cout << aux->dato << " "; 
+            fout << aux->dato << " -> "; 
             if(aux->adj != nullptr)
             {
                 auxAdj = aux->adj;
-                cout << auxAdj->peso << " "; 
-                cout << auxAdj->dato << " "; 
+                fout << auxAdj->dato << ", "; 
                 while(auxAdj->next != nullptr)
                 {
                     auxAdj = auxAdj->next; 
-                    cout << auxAdj->peso << " "; 
-                    cout << auxAdj->dato << " "; 
+                    fout << auxAdj->dato << ", "; 
                 }
             }
             aux = aux->next;
-            cout << endl; 
+            fout << endl; 
         }
-        cout << aux->dato << " "; 
+        fout << aux->dato << " -> "; 
         if(aux->adj != nullptr)
         {
             auxAdj = aux->adj; 
-            cout << auxAdj->peso << " "; 
-            cout << auxAdj->dato << " "; 
+            fout << auxAdj->dato << ", "; 
             while(auxAdj->next != nullptr)
             {
                 auxAdj = auxAdj->next;
-                cout << auxAdj->peso << " "; 
-                cout << auxAdj->dato << " "; 
+                fout << auxAdj->dato << ", "; 
             }
         }
-        cout << endl;
+        fout << endl;
     }
     else
     {
-        cout << "Lista vacIa\n";
+        fout << "Lista vacIa\n";
     }
 }
 
@@ -284,17 +286,27 @@ T LinkedListTGP<T>::getData(int index)
 template <class T> 
 int LinkedListTGP<T>::findData(T data)
 {
+
     NodeVT<T> *aux = head; 
     int count = 0; 
-    while(aux != nullptr && aux->dato != data && count < size)
+    while(aux != nullptr)
     {
-        aux = aux->next; 
-        count++;
+        if(aux->dato != data && count < size)
+        {
+            aux = aux->next; 
+            count++;
+        }
+        else 
+        {
+            return count; 
+        }
     }
-    if(aux->dato == data)
-        return count;
+    
+    if(aux == nullptr)
+        return -1; // -1 es la bandera para cuando no se repite el elemento 
     else   
-        return -1;
+        return count;
+    
 }
 
 template <class T> 
@@ -458,11 +470,16 @@ void LinkedListTGP<T>::clear()
 }
 
 template <class T>
-void LinkedListTGP<T>::BFS(T data)
+void LinkedListTGP<T>::BFS(T data, int cont)
 {
     NodeVT<T> *aux = head;
     int pos = 0; 
-    while(aux->dato != data && pos < size)
+    if(cont == 1)
+    {
+        fout2.open("output-2.out");
+        fout2 << "RECORRIDO BFS: \n";
+    }
+    while(aux->dato != data && pos < size && aux->next != nullptr)
     {
         aux = aux->next; 
         pos++;
@@ -470,23 +487,26 @@ void LinkedListTGP<T>::BFS(T data)
     if(aux->dato == data && aux->processed == false) // "aux->dato == data &&" es opcional
     {
         aux->processed = true; 
-        cout << aux->dato << " ";
+        fout2 << aux->dato << "\n";
         if(aux->adj != nullptr)
         {
             NodeT<T> *aux2 = aux->adj; 
             aux2->processed = true; // opcional
-            fila.enqueue(aux2->dato);
+            fila.enqueue(aux2->dato, aux2->tiempoTren, aux2->distanciaTren, aux2->tiempoCarro, aux2->distanciaCarro);
             while(aux2->next != nullptr)
             {
                 aux2 = aux2->next; 
                 aux2->processed = true; // opcional
-                fila.enqueue(aux2->dato);
+                fila.enqueue(aux2->dato, aux2->tiempoTren, aux2->distanciaTren, aux2->tiempoCarro, aux2->distanciaCarro);
             }
         } 
     }
-    T sigNodo = fila.getData(0);
-    if(fila.dequeue())
-        BFS(sigNodo);
+    if(fila.getSize()>0)
+    {
+        T sigNodo = fila.getData(0);
+        if(fila.dequeue())
+            BFS(sigNodo, cont+1);
+    }
 }
 
 template <class T>
@@ -522,9 +542,3 @@ void LinkedListTGP<T>::DFS(T data)
         }
     }
 }
-
-// template <class T>
-// int LinkedListTGP<T>::isProcessed(T data)
-// {
-//     // int pos = procesados.
-// }

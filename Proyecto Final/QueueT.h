@@ -2,7 +2,7 @@
 #include "NodeT.h"
 
 template <class T>
-class Queue
+class QueueT
 {
     private: 
         int size = 0; 
@@ -10,10 +10,10 @@ class Queue
         NodeT<T> *tail; 
 
     public: 
-        Queue<T>(){ size = 0; head = nullptr; tail = nullptr; }
+        QueueT<T>(){ size = 0; head = nullptr; tail = nullptr; }
         bool isEmpty(){ return size == 0; }
         int getSize(){ return size; }
-        void enqueue(T);
+        void enqueue(T toV, string pondTiempoTren, string pondDistTren, string pondTiempoTrenCarro, string pondDistCarro);
         bool dequeue();
         T getData(int);
         void print();
@@ -21,9 +21,9 @@ class Queue
 };
 
 template <class T> 
-void Queue<T>::enqueue(T dato)
+void QueueT<T>::enqueue(T toV, string pondTiempoTren, string pondDistTren, string pondTiempoTrenCarro, string pondDistCarro)
 {
-    NodeT<T> *aux = new NodeT<T>(dato);
+    NodeT<T> *aux = new NodeT(toV, pondTiempoTren, pondDistTren, pondTiempoTrenCarro, pondDistCarro);
     if(size > 0)
     {
         tail->next = aux; 
@@ -38,7 +38,7 @@ void Queue<T>::enqueue(T dato)
 }
 
 template <class T> 
-void Queue<T>::print()
+void QueueT<T>::print()
 {
     if(size > 0)
     {
@@ -56,7 +56,7 @@ void Queue<T>::print()
 }
 
 template <class T> 
-bool Queue<T>::dequeue()
+bool QueueT<T>::dequeue()
 {
     if(size > 0)
     {
@@ -74,7 +74,7 @@ bool Queue<T>::dequeue()
 }
 
 template <class T> 
-T Queue<T>::getData(int index)
+T QueueT<T>::getData(int index)
 {
     if(size > 0 && index < size)
     {
@@ -85,13 +85,13 @@ T Queue<T>::getData(int index)
     }
     else
     {
-        return -1;
+        return 0;
     }
 }
 
 
 template <class T> 
-void Queue<T>::clear()
+void QueueT<T>::clear()
 {
     if(size > 0)
     {
