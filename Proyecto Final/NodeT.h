@@ -26,6 +26,10 @@ class NodeT
             distanciaCarro = pondDistCarro; 
             next = nullptr; 
         } 
+        NodeT<T>(T datoParam)
+        {
+            dato = datoParam;
+        }
 };
 
 #endif

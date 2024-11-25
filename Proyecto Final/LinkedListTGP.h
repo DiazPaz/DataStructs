@@ -1,6 +1,7 @@
 #include "NodeVT.h"
 #include "QueueT.h"
 #include <limits>
+#include <unordered_map>
 
 template <class T>
 class LinkedListTGP
@@ -11,6 +12,7 @@ class LinkedListTGP
         QueueT<T> fila;
         QueueT<T> procesados;
         ofstream fout2;
+        ofstream fout3;
         int table[20][4];
         void printTable(T from);
         void initTable(T from);
@@ -34,8 +36,8 @@ class LinkedListTGP
         bool insertAt(int, T);
         void insertAdj(T fromV, T toV, string pondTiempoTren, string pondDistTren, string pondTiempoCarro, string pondDistCarro);
         void BFS(T data, int cont);
-        void DFS(T data);
-        // int isProcessed(T dato);
+        void DFS(T data, int cont);
+        void resetProcessed();
         void Dijkstra(T from); 
         void clear();
 };
@@ -474,29 +476,38 @@ void LinkedListTGP<T>::BFS(T data, int cont)
 {
     NodeVT<T> *aux = head;
     int pos = 0; 
+
     if(cont == 1)
     {
         fout2.open("output-2.out");
+        resetProcessed();
         fout2 << "RECORRIDO BFS: \n";
     }
+
     while(aux->dato != data && pos < size && aux->next != nullptr)
     {
         aux = aux->next; 
         pos++;
     }
-    if(aux->dato == data && aux->processed == false) // "aux->dato == data &&" es opcional
+
+    if(aux == nullptr)
+    {
+        return; 
+    }
+
+    if(aux->dato == data && aux->processed == false) 
     {
         aux->processed = true; 
         fout2 << aux->dato << "\n";
         if(aux->adj != nullptr)
         {
             NodeT<T> *aux2 = aux->adj; 
-            aux2->processed = true; // opcional
+            aux2->processed = true; 
             fila.enqueue(aux2->dato, aux2->tiempoTren, aux2->distanciaTren, aux2->tiempoCarro, aux2->distanciaCarro);
             while(aux2->next != nullptr)
             {
                 aux2 = aux2->next; 
-                aux2->processed = true; // opcional
+                aux2->processed = true;
                 fila.enqueue(aux2->dato, aux2->tiempoTren, aux2->distanciaTren, aux2->tiempoCarro, aux2->distanciaCarro);
             }
         } 
@@ -510,8 +521,14 @@ void LinkedListTGP<T>::BFS(T data, int cont)
 }
 
 template <class T>
-void LinkedListTGP<T>::DFS(T data)
+void LinkedListTGP<T>::DFS(T data, int cont)
 {
+    if(cont == 0)
+    {
+        fout3.open("output-3.out");
+        resetProcessed();
+        fout3 << "RECORRIDO DFS: \n";
+    }
     NodeVT<T> *aux = head; 
     // busqueda del nodo origen para empezar el recorrido
     int pos = 0;
@@ -521,12 +538,17 @@ void LinkedListTGP<T>::DFS(T data)
         pos++;
     }
 
+    if(aux == nullptr)
+    {
+        return; 
+    }
+
     // verificamos si el nodo ya fue procesado o no 
     if(aux->dato == data && aux->processed == false)
     {
         aux->processed = true; 
-        procesados.enqueue(aux->dato);
-        cout << aux->dato << " ";
+        procesados.enqueueVT(aux->dato);
+        fout3 << aux->dato << "\n";
         NodeT<T> *aux2 = aux->adj; 
         
         // ciclo donde verificamos si los nodos adyacentes ya fueron procesados o no
@@ -536,9 +558,26 @@ void LinkedListTGP<T>::DFS(T data)
             if (aux2->processed == false)
             {
                 aux2->processed = true; 
-                DFS(aux2->dato); 
+                DFS(aux2->dato, cont+1); 
             }
             aux2 = aux2->next;
         }
+    }
+}
+
+template <class T>
+void LinkedListTGP<T>::resetProcessed()
+{
+    NodeVT<T> *aux = head;
+    while (aux != nullptr)
+    {
+        aux->processed = false;
+        NodeT<T> *adj = aux->adj;
+        while (adj != nullptr)
+        {
+            adj->processed = false;
+            adj = adj->next;
+        }
+        aux = aux->next;
     }
 }

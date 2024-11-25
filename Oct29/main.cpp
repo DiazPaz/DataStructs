@@ -17,7 +17,6 @@ int main(void)
     miListaV.addFirst(5);
     miListaV.addFirst(6);
     miListaV.addFirst(7);
-    miListaV.addFirst(6);
 
     miListaV.insertAdj(0,3,1); 
     miListaV.insertAdj(1,3,4); 
@@ -36,7 +35,10 @@ int main(void)
     miListaV.insertAdj(7,3,9); 
     miListaV.insertAdj(7,4,4); 
 
-    miListaV.printGraph();
+    miListaV.Dijkstra(0);
+
+
+
     
     return 0;   
 }

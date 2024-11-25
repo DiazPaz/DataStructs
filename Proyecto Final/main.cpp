@@ -93,7 +93,8 @@ int main(void)
 
             }while(flag == false);
 
-            routes.BFS(aux, 0 );
+            routes.BFS(aux, 0);
+            routes.DFS(aux, 0);
             cout << "Ciudad encontrada. \nArchivo de salida output2.out creado. \nArchivo de salida output3.out creado.\n";
 
             break;

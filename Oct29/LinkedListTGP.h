@@ -23,7 +23,6 @@ class LinkedListTGP
         void addLast(T);
         void printList();
         void printGraph();
-        void printBFS();
         T getData(int);
         int findData(T);
         bool deleteData(T);
@@ -34,7 +33,6 @@ class LinkedListTGP
         void insertAdj(T fromV, T toV, int ponderacion);
         void BFS(T data);
         void DFS(T data);
-        // int isProcessed(T dato);
         void Dijkstra(T from); 
         void clear();
 };
@@ -286,7 +284,7 @@ int LinkedListTGP<T>::findData(T data)
 {
     NodeVT<T> *aux = head; 
     int count = 0; 
-    while(aux != nullptr && aux->dato != data && count < size)
+    while(aux->dato != data && count < size)
     {
         aux = aux->next; 
         count++;
