@@ -12,7 +12,7 @@ using namespace std;
 
 int main(void)
 {
-    LinkedListTGP<string> routes;
+    LinkedListTGP<string> routes;  
 
     ifstream fin; 
 
@@ -80,7 +80,8 @@ int main(void)
                 // se genera un archivo de salida con la lista de adyacencias 
                 system("cls");
                 routes.printGraph();
-                cout << "Archivo de salida output-1.out creado!\n";
+                cout << "Archivo de salida output-1.out creado!\nSeleccione la opcion 'Salir' para generar archvios...\n";
+                cout << "\nPresione ENTER para coninuar\n";
                 getch();
                 break;
 
@@ -104,6 +105,7 @@ int main(void)
                     {
                         system("cls");
                         cout << "Ciudad no encontrada, intente de nuevo. \n";
+                        cout << "\nPresione ENTER para coninuar\n";
                         getch();
                     }
 
@@ -114,6 +116,7 @@ int main(void)
 
                 system("cls");
                 cout << "Ciudad encontrada. \nArchivo de salida output2.out (BFS) listo. \nArchivo de salida output3.out (DFS) listo.\nSeleccione la opcion 'Salir' para generar archvios...\n";
+                cout << "\nPresione ENTER para coninuar\n";
                 getch();
 
                 break;
@@ -138,6 +141,7 @@ int main(void)
                     {
                         system("cls");
                         cout << "Ciudad no encontrada, intente de nuevo. \n";
+                        cout << "\nPresione ENTER para coninuar\n";
                         getch();
                     }
 
@@ -161,6 +165,7 @@ int main(void)
                     {
                         system("cls");
                         cout << "Ciudad no encontrada, intente de nuevo. \n";
+                        cout << "\nPresione ENTER para coninuar\n";
                         getch();
                     }
 
@@ -169,6 +174,7 @@ int main(void)
                 // se realiza Dijkstra para encontrar las rutas más rápidas dependiendo del tiempo y la distancia
                 system("cls");
                 routes.Dijkstra(aux, aux2);
+                cout << "\nPresione ENTER para coninuar\n";
                 getch();
                 break;
 
@@ -176,6 +182,7 @@ int main(void)
                 // se cierra el archivo
                 system("cls");
                 cout << "Doy mi palabra que he realizado esta actividad con integridad acadEmica. \n";
+                cout << "\nPresione ENTER para coninuar\n";
                 getch();
                 salir = true;
                 return 0; 
@@ -184,6 +191,7 @@ int main(void)
             default:
                 system("cls");
                 cout << "opcion no valida, intente de nuevo...\n";
+                cout << "\nPresione ENTER para coninuar\n";
                 getch();
                 break;
         }

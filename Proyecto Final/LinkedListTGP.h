@@ -115,13 +115,14 @@ void LinkedListTGP<T>::printTable(T org, int table[82][7])
 template <class T>
 void LinkedListTGP<T>::Dijkstra(T org, T dest)
 {
+    cout << " ---- Ruta: " << org << " -> " << dest << " ----\n";
     initTableCarro(dest);
     initTableTren(dest);
     int res1 = DijkstraRunCarro(dest, dest);
     int res2 = DijkstraRunTren(dest, dest);
-    cout << "EN CARRO: \n\n";
+    cout << "\nEN CARRO: \n\n";
     printTable(org, tableCar);
-    cout << "EN TREN: \n\n";
+    cout << "\nEN TREN: \n\n";
     printTable(org, tableTrain);
 }
 
