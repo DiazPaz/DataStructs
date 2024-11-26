@@ -15,7 +15,7 @@ int main(void)
 
     string org, dest, line, word, timeTrain, timeCar, distanceTrain, distanceCar, adjInfo[500][6], nodeInfo[500], aux;
     int count, city = 0, size = 0, opcion; 
-    bool flag = false; 
+    bool flag = false, salir = false; 
 
     fin.open("EuropeCities.csv", ios::in);
 
@@ -53,61 +53,75 @@ int main(void)
         routes.insertAdj(adjInfo[i][0], adjInfo[i][1], adjInfo[i][2], adjInfo[i][3], adjInfo[i][4], adjInfo[i][5]);
     }
 
-
-    // system("cls");
-    cout << "1. Desplegar lista de adyacencias del grafo.\n";
-    cout << "2. Desplegar recorridos del grafo.\n";
-    cout << "3. InformaciOn entre dos ciudades.\n";
-    cout << "4. Salir.\n";
-    cout << "\nIngresa opciOn: ";
-    cin >> opcion; 
-
-    switch(opcion)
+    do
     {
-        case 1:
-            // system("cls");
-            routes.printGraph();
-            cout << "Archivo de salida output-1.out creado!\n";
-            // getch();
-            break;
 
-        case 2:
-            do
-            {
-                // system("cls");
-                cout << "Ciudad de origen: ";
-                cin >> aux; 
-                
-                for(int i = 0; i < size; i++)
+
+        system("cls");
+        cout << "1. Desplegar lista de adyacencias del grafo.\n";
+        cout << "2. Desplegar recorridos del grafo.\n";
+        cout << "3. InformaciOn entre dos ciudades.\n";
+        cout << "4. Salir.\n";
+        cout << "\nIngresa opciOn: ";
+        cin >> opcion; 
+
+        switch(opcion)
+        {
+            case 1:
+                system("cls");
+                routes.printGraph();
+                cout << "Archivo de salida output-1.out creado!\n";
+                getch();
+                break;
+
+            case 2:
+                do
                 {
-                    if(aux == adjInfo[i][0])
+                    system("cls");
+                    cout << "Ciudad de origen: ";
+                    cin >> aux; 
+                    
+                    for(int i = 0; i < size; i++)
                     {
-                        flag = true;
+                        if(aux == adjInfo[i][0])
+                        {
+                            flag = true;
+                        }
                     }
-                }
-                if(flag == false)
-                {
-                    // system("cls");
-                    cout << "Ciudad no encontrada, intente de nuevo. \n";
-                }
+                    if(flag == false)
+                    {
+                        system("cls");
+                        cout << "Ciudad no encontrada, intente de nuevo. \n";
+                        getch();
+                    }
 
-            }while(flag == false);
+                }while(flag == false);
 
-            routes.BFS(aux, 0);
-            routes.DFS(aux, 0);
-            cout << "Ciudad encontrada. \nArchivo de salida output2.out creado. \nArchivo de salida output3.out creado.\n";
+                routes.BFS(aux, 0);
+                routes.DFS(aux, 0);
+                
+                system("cls");
+                cout << "Ciudad encontrada. \nArchivo de salida output2.out creado. \nArchivo de salida output3.out creado.\n";
+                getch();
 
-            break;
-            
-        case 3:
+                break;
+                
+            case 3:
 
-            break;
-        case 4:
-            return 0; 
-            break;
-        default:
-            break;
-    }
+                break;
+
+            case 4:
+                system("cls");
+                cout << "Doy mi palabra que he realizado esta actividad con integridad acadEmica. \n";
+                getch();
+                salir = true;
+                return 0; 
+                break;
+            default:
+                break;
+        }
+
+    }while(salir != true);
 
     fin.close();
     return 0; 
