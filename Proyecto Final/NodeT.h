@@ -10,14 +10,14 @@ class NodeT
     friend class QueueT<T>; 
     private: 
         T dato;
-        string distanciaTren; 
-        string distanciaCarro; 
-        string tiempoTren; 
-        string tiempoCarro; 
+        int distanciaTren; 
+        int distanciaCarro; 
+        int tiempoTren; 
+        int tiempoCarro; 
         NodeT<T> *next;
         bool processed = false; 
     public: 
-        NodeT<T>(T datoParam, string pondTiempoTren, string pondDistTren, string pondTiempoCarro, string pondDistCarro)
+        NodeT<T>(T datoParam, int pondTiempoTren, int pondDistTren, int pondTiempoCarro, int pondDistCarro)
         { 
             dato = datoParam; 
             tiempoTren = pondTiempoTren;

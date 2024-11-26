@@ -13,7 +13,11 @@ class LinkedListTGP
         QueueT<T> procesados;
         ofstream fout2;
         ofstream fout3;
-        int table[20][4];
+        int table[82][4];
+
+        string tableCar[82][6];
+        string tableTrain[82][6];
+
         void printTable(T from);
         void initTable(T from);
         int DijkstraRun(T from);
@@ -34,7 +38,7 @@ class LinkedListTGP
         void updateData(T, T);
         void updateAt(int, T);
         bool insertAt(int, T);
-        void insertAdj(T fromV, T toV, string pondTiempoTren, string pondDistTren, string pondTiempoCarro, string pondDistCarro);
+        void insertAdj(T fromV, T toV, int pondTiempoTren, int pondDistTren, int pondTiempoCarro, int pondDistCarro);
         void BFS(T data, int cont);
         void DFS(T data, int cont);
         void resetProcessed();
@@ -83,56 +87,73 @@ int LinkedListTGP<T>::DijkstraRun(T from)
     int pos0 = findData(from);
     NodeVT<T> *aux = head; 
     int pos = 0, posT, costo = table[pos0][2];
+
     while(aux->dato != from && pos < size) // ciclo para ponerme en el nodo donde este from
     {
         aux = aux->next; 
         pos++; 
     }
+
     if(aux->dato == from)
     {
         if(aux->adj != nullptr) // si tiene adyacencias, las recorrera todas
         {
             NodeT<T> *aux2 = aux->adj;
-            do{
+            do{ // ciclo para recorrer todas las adyacencias
                 posT = findData(aux2->dato);
-                if(table[posT][1] == 0)
+                if(table[posT][1] == 0) // recordamos que la posición 1 de la tabla es para valores booleanos: 1=visitado y 0=noVisitado
                 {
-                    if(table[posT][2] > (costo + aux2->peso))
+                    if(table[posT][2] > (costo + aux2->peso)) // comparamos el peso actual puesto en la tabla con el peso de las adyacencias del objeto 'from'
                     {
-                        table[posT][2] = costo + aux2->peso; 
-                        table[posT][3] = pos0; 
+                        table[posT][2] = costo + aux2->peso; // si el peso para a la adyacencia de 'from' es menor que el ya propuesto en la tabla, se suma (para armar la ruta)
+                        table[posT][3] = pos0; // asignamos el valor de la columna 3 de la tabla para ese dato como el nombre del nodo del que venimos
                     }
                 }
-                aux2 = aux2->next;
-            }while(aux != nullptr);
+                aux2 = aux2->next; // vamos a la siguiente adyacencia
+            }while(aux2 != nullptr);
         }
     }
+
     int menor = numeric_limits<T>::max();
     int posM; 
-    for(int i = 0; i < size; i++)
+
+    for(int i = 0; i < size; i++) // ciclo para encontrar la via más rápida entre dos puntos
     {
-        if(table[i][1] == 0)
+        if(table[i][1] == 0) // si el dato 'i' no ha sido visitado
         {
-            if(table[i][2] < menor)
+            if(table[i][2] < menor) // si el peso para llegar al dato 'i' es menor al peso ya menor para llegar al dato 'i'
             {
-                menor = table[i][2];
-                posM = i; 
+                menor = table[i][2]; // asignamos nuevo valor menor para llegar al dato 'i'
+                posM = i; // posición del dato 'i'
             }
         }
     }
-    if(menor != numeric_limits<T>::max())
+
+    if(menor != numeric_limits<T>::max()) // si todos los caminos a cada vertice ya tienen un peso
     {
-        from = getData(posM);
-        pos0 = findData(from);
-        table[pos0][1] = 1; 
-        DijkstraRun(from);
+        from = getData(posM); // (recordamos que posM es la posición del elemento vecino al que más rápido se llega) asignamos a 'from' como el elemento más rápido al que podemos llegar
+        pos0 = findData(from); // buscamos la posición del dato de 'from' (el de más rápido acceso) en nuestra Linked List
+        table[pos0][1] = 1; // visitamos la posición en la tabla para nuestro dato 'from' y la colocamos como visitada
+        DijkstraRun(from); // ahora ya tenemos la ruta más rápida para desde el 'from' del parámetro inicial al 'from' que irá como parámetro en esta siguiente función DijkstraRun
     }
     else
     {
-        return 0; 
+        return 0; // si el vertice es infinito es por que la tabla sigue vacía
     }
     return 0;
 }
+
+// template <class T>
+// void LinkedListTGP<T>::initTable(T from)
+// {
+//     int pos = findData(from);
+//     for(int i = 0; i < size; i++)
+//     {
+//         tableCar[i][0] = getData(i+1);
+//         tableCar[i][1] = 0;
+//         tableCar[i][2] = std::numeric_limits<T>::max();
+//     }
+// }
 
 template <class T>
 void LinkedListTGP<T>::initTable(T from)
@@ -142,15 +163,15 @@ void LinkedListTGP<T>::initTable(T from)
     {
         table[i][0] = i; // columna de datos
         table[i][1] = 0; // columna de si ya fueron visitados (se inicializa en 0 == false)
-        table[i][2] = std::numeric_limits<T>::max(); // columna de limites iniciales (se inicializa en el infinito)
-        table[i][3] = -1; // columna de costo para visitar al vertice
+        table[i][2] = std::numeric_limits<int>::max(); // columna de limites iniciales (se inicializa en el infinito)
+        table[i][3] = -1; // representa al nodo anterior en la ruta más corta
     }
     table[pos][1] = 1; 
     table[pos][2] = 0; 
 }
 
 template <class T>
-void LinkedListTGP<T>::insertAdj(T fromV, T toV, string pondTiempoTren, string pondDistTren, string pondTiempoTrenCarro, string pondDistCarro)
+void LinkedListTGP<T>::insertAdj(T fromV, T toV, int pondTiempoTren, int pondDistTren, int pondTiempoTrenCarro, int pondDistCarro)
 {
     NodeVT<T> *aux = head; 
     int count = 0; 

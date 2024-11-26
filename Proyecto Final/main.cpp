@@ -13,8 +13,8 @@ int main(void)
 
     ifstream fin; 
 
-    string org, dest, line, word, timeTrain, timeCar, distanceTrain, distanceCar, adjInfo[500][6], nodeInfo[500], aux;
-    int count, city = 0, size = 0, opcion; 
+    string line, word, adjInfo[500][6], aux;
+    int count, size = 0, opcion, timeTrain, timeCar; 
     bool flag = false, salir = false; 
 
     fin.open("EuropeCities.csv", ios::in);
@@ -50,7 +50,9 @@ int main(void)
 
     for(int i = 0; i < size-1; i++)
     {
-        routes.insertAdj(adjInfo[i][0], adjInfo[i][1], adjInfo[i][2], adjInfo[i][3], adjInfo[i][4], adjInfo[i][5]);
+        timeTrain = stoi(adjInfo[i][2].substr(0, adjInfo[i][2].find(":")))*60 + stoi(adjInfo[i][2].substr(adjInfo[i][2].find(":")+1, adjInfo[i][2].size()));
+        timeCar = stoi(adjInfo[i][4].substr(0, adjInfo[i][4].find(":")))*60 + stoi(adjInfo[i][4].substr(adjInfo[i][4].find(":")+1, adjInfo[i][4].size()));
+        routes.insertAdj(adjInfo[i][0], adjInfo[i][1], timeTrain, stoi(adjInfo[i][3]), timeCar, stoi(adjInfo[i][5]));
     }
 
     do
@@ -99,7 +101,7 @@ int main(void)
 
                 routes.BFS(aux, 0);
                 routes.DFS(aux, 0);
-                
+
                 system("cls");
                 cout << "Ciudad encontrada. \nArchivo de salida output2.out creado. \nArchivo de salida output3.out creado.\n";
                 getch();

@@ -13,7 +13,7 @@ class QueueT
         QueueT<T>(){ size = 0; head = nullptr; tail = nullptr; }
         bool isEmpty(){ return size == 0; }
         int getSize(){ return size; }
-        void enqueue(T toV, string pondTiempoTren, string pondDistTren, string pondTiempoTrenCarro, string pondDistCarro);
+        void enqueue(T toV, int pondTiempoTren, int pondDistTren, int pondTiempoTrenCarro, int pondDistCarro);
         void enqueueVT(T toV);
         bool dequeue();
         T getData(int);
@@ -22,7 +22,7 @@ class QueueT
 };
 
 template <class T> 
-void QueueT<T>::enqueue(T toV, string pondTiempoTren, string pondDistTren, string pondTiempoTrenCarro, string pondDistCarro)
+void QueueT<T>::enqueue(T toV, int pondTiempoTren, int pondDistTren, int pondTiempoTrenCarro, int pondDistCarro)
 {
     NodeT<T> *aux = new NodeT(toV, pondTiempoTren, pondDistTren, pondTiempoTrenCarro, pondDistCarro);
     if(size > 0)
