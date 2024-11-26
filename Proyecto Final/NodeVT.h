@@ -1,3 +1,6 @@
+// David Díaz Paz y Puente | 650794 | Estructuras de Datos
+// Doy mi palabra que he realizado esta actividad con integridad académica.
+
 #include "NodeT.h"
 template <class T> class LinkedListT; 
 template <class T> class LinkedListTGP; 
